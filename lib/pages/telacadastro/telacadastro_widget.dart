@@ -1,4 +1,7 @@
+import 'package:buscafarma/backend/model/categoria.dart';
 import 'package:buscafarma/nav.dart';
+import 'package:buscafarma/services/categoria_service.dart';
+import 'package:get_it/get_it.dart';
 
 import '../telaatendimento/telaatendimento_widget.dart';
 import '/flutter_flow/flutter_flow_drop_down.dart';
@@ -854,56 +857,7 @@ class _TelacadastroWidgetState extends State<TelacadastroWidget> {
                                             ),
                                           ),
                                         ),
-                                        FlutterFlowDropDown<String>(
-                                          controller:
-                                              _model.ddCategoriaValueController ??=
-                                                  FormFieldController<String>(
-                                                    null,
-                                                  ),
-                                          options: [
-                                            'ANTIBIÓTICO',
-                                            'Option 2',
-                                            'Option 3',
-                                          ],
-                                          onChanged:
-                                              (val) => safeSetState(
-                                                () =>
-                                                    _model.ddCategoriaValue =
-                                                        val,
-                                              ),
-                                          width: 200,
-                                          height: 40,
-                                          textStyle: GoogleFonts.inter()
-                                              .copyWith(
-                                                fontStyle:
-                                                    fft.bodyMedium.fontStyle,
-                                                fontWeight:
-                                                    fft.bodyMedium.fontWeight,
-                                                letterSpacing: 0.0,
-                                              ),
-                                          hintText: 'ANTIBIÓTICO',
-                                          icon: Icon(
-                                            Icons.keyboard_arrow_down_rounded,
-                                            color: fft.secondaryText,
-                                            size: 24,
-                                          ),
-                                          fillColor: fft.secondaryBackground,
-                                          elevation: 2,
-                                          borderColor: Colors.transparent,
-                                          borderWidth: 0,
-                                          borderRadius: 8,
-                                          margin:
-                                              EdgeInsetsDirectional.fromSTEB(
-                                                12,
-                                                0,
-                                                12,
-                                                0,
-                                              ),
-                                          hidesUnderline: true,
-                                          isOverButton: false,
-                                          isSearchable: false,
-                                          isMultiSelect: false,
-                                        ),
+                                        categoriaDD(),
                                         Padding(
                                           padding: EdgeInsets.all(10),
                                           child: Text(
@@ -1365,9 +1319,7 @@ class _TelacadastroWidgetState extends State<TelacadastroWidget> {
                   child: Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
                     child: FFButtonWidget(
-                      onPressed: () {
-                        print('Button pressed ...');
-                      },
+                      onPressed: () async => await _model.salvar(context),
                       text: 'Cadastrar Medicamento',
                       options: FFButtonOptions(
                         height: 61.1,
@@ -1392,6 +1344,73 @@ class _TelacadastroWidgetState extends State<TelacadastroWidget> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget categoriaDD() {
+    final fft = FlutterFlowTheme.of(context);
+    final service = GetIt.I<CategoriaService>();
+
+    return FutureBuilder(
+      future: service.carregar(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              "Erro carregando categorias",
+              style: GoogleFonts.inter().copyWith(
+                fontWeight: fft.bodySmall.fontWeight,
+                fontStyle: fft.bodySmall.fontStyle,
+              ),
+            ),
+          );
+        }
+
+        if (snapshot.hasData) {
+          final categorias = snapshot.data!;
+
+          return FlutterFlowDropDown<Categoria>(
+            controller:
+                _model.ddCategoriaValueController ??=
+                    FormFieldController<Categoria>(null),
+            options: categorias,
+            onChanged:
+                (val) => safeSetState(() => _model.ddCategoriaValue = val),
+            width: 200,
+            height: 40,
+            textStyle: GoogleFonts.inter().copyWith(
+              fontStyle: fft.bodySmall.fontStyle,
+              fontWeight: fft.bodySmall.fontWeight,
+              letterSpacing: 0.0,
+            ),
+            hintText: _model.ddCategoriaValue?.descricao ?? "",
+            icon: Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: fft.secondaryText,
+              size: 24,
+            ),
+            fillColor: fft.secondaryBackground,
+            elevation: 2,
+            borderColor: Colors.transparent,
+            borderWidth: 0,
+            borderRadius: 8,
+            margin: EdgeInsetsDirectional.fromSTEB(12, 0, 12, 0),
+            hidesUnderline: true,
+            isOverButton: false,
+            isSearchable: false,
+            isMultiSelect: false,
+          );
+        }
+
+        return Center(
+          child: Column(
+            children: [
+              CircularProgressIndicator(),
+              Text("Carregando categorias..."),
+            ],
+          ),
+        );
+      },
     );
   }
 }

@@ -1,6 +1,7 @@
 
 import 'package:buscafarma/get_it_setup.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'flutter_flow/flutter_flow_theme.dart';
 
 import 'nav.dart';
@@ -8,6 +9,7 @@ import 'state.dart';
 
 void main() async {
   setupGetIt();
+  initLocalStorage();
   WidgetsFlutterBinding.ensureInitialized();
   GoRouter.optionURLReflectsImperativeAPIs = true;
 

@@ -9,6 +9,11 @@ class Categoria {
 
   Categoria(this.id, this.descricao);
 
+  @override
+  String toString() {
+    return descricao;
+  }
+
   factory Categoria.fromJson(Map<String, dynamic> json) =>
       _$CategoriaFromJson(json);
 

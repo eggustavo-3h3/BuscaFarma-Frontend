@@ -60,6 +60,22 @@ class ReservaService extends ChangeNotifier {
     });
   }
 
+  Future<Message> makeCancelada(Reserva reserva) async {
+    return await makeCall(() async {
+      final result = await API.instance.updateReserva(
+        reserva.id,
+        UpdateReserva.cancelada(reserva),
+      );
+
+      _reservas.removeWhere((r) => r.id == reserva.id);
+      _reservas.add(reserva.withStatus(StatusReserva.Finalizada));
+
+      notifyListeners();
+
+      return result;
+    });
+  }
+
   Future<Message> makeAtendida(
     Reserva reserva,
     int quantidade,

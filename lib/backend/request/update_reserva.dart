@@ -21,6 +21,8 @@ class UpdateReserva {
 
   final StatusReserva status;
 
+  final int? quantidade;
+
   final String? retiranteNome;
   final String? retiranteCPF;
 
@@ -34,6 +36,7 @@ class UpdateReserva {
     required this.status,
     required this.retiranteNome,
     required this.retiranteCPF,
+    required this.quantidade,
   });
 
   factory UpdateReserva.fromJson(Map<String, dynamic> json) =>
@@ -45,8 +48,9 @@ class UpdateReserva {
     medicamentoId: reserva.medicamento.id,
     data: reserva.data,
     imagemReceita: reserva.imagemReceita,
-    tipoAtendimento: reserva.tipoAtendimento,
+    tipoAtendimento: TipoAtendimento.NaoAtendida,
     status: StatusReserva.Indisponivel,
+    quantidade: null,
     retiranteNome: null,
     retiranteCPF: null,
   );
@@ -57,8 +61,9 @@ class UpdateReserva {
     medicamentoId: reserva.medicamento.id,
     data: reserva.data,
     imagemReceita: reserva.imagemReceita,
-    tipoAtendimento: reserva.tipoAtendimento,
+    tipoAtendimento: TipoAtendimento.NaoAtendida,
     status: StatusReserva.FaltaEstoque,
+    quantidade: null,
     retiranteNome: null,
     retiranteCPF: null,
   );
@@ -74,10 +79,24 @@ class UpdateReserva {
     medicamentoId: reserva.medicamento.id,
     data: reserva.data,
     imagemReceita: reserva.imagemReceita,
-    tipoAtendimento: reserva.tipoAtendimento,
+    tipoAtendimento: TipoAtendimento.Atendida,
     status: StatusReserva.Finalizada,
+    quantidade: quantidade,
     retiranteNome: retiranteNome,
     retiranteCPF: retiranteCPF,
+  );
+
+  factory UpdateReserva.cancelada(Reserva reserva) => UpdateReserva(
+    id: reserva.id,
+    usuarioId: reserva.usuario.id,
+    medicamentoId: reserva.medicamento.id,
+    data: reserva.data,
+    imagemReceita: reserva.imagemReceita,
+    tipoAtendimento: TipoAtendimento.Cancelada,
+    status: StatusReserva.Finalizada,
+    quantidade: null,
+    retiranteNome: null,
+    retiranteCPF: null,
   );
 
   Map<String, dynamic> toJson() => _$UpdateReservaToJson(this);

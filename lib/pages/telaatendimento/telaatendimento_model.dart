@@ -97,6 +97,25 @@ class TelaatendimentoModel extends FlutterFlowModel<TelaatendimentoWidget> {
     }
   }
 
+  Future<void> cancel(BuildContext context, Reserva reserva) async {
+    try {
+      final service = GetIt.I<ReservaService>();
+      final result = await service.makeCancelada(reserva);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(result.mensagem)));
+      }
+    } on Exception catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Ocorreu um erro: ${e.toString()}")),
+        );
+      }
+    }
+  }
+
   Future<void> makeAtendida(BuildContext context, Reserva reserva) async {
     try {
       final quantidade = int.parse(txtQuantidadeTextController.text);

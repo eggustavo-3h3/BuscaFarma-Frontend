@@ -20,6 +20,7 @@ UpdateReserva _$UpdateReservaFromJson(Map<String, dynamic> json) =>
       status: $enumDecode(_$StatusReservaEnumMap, json['status']),
       retiranteNome: json['retiranteNome'] as String?,
       retiranteCPF: json['retiranteCPF'] as String?,
+      quantidade: (json['quantidade'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$UpdateReservaToJson(
@@ -32,6 +33,7 @@ Map<String, dynamic> _$UpdateReservaToJson(
   'imagemReceita': instance.imagemReceita,
   'enumTipoAtendimento': _$TipoAtendimentoEnumMap[instance.tipoAtendimento]!,
   'status': _$StatusReservaEnumMap[instance.status]!,
+  'quantidade': instance.quantidade,
   'retiranteNome': instance.retiranteNome,
   'retiranteCPF': instance.retiranteCPF,
 };

@@ -4,6 +4,7 @@ import 'package:buscafarma/backend/model/reserva.dart';
 import 'package:buscafarma/backend/model/usuario.dart';
 import 'package:buscafarma/backend/request/credencial.dart';
 import 'package:buscafarma/backend/request/nova_reserva.dart';
+import 'package:buscafarma/backend/request/novo_medicamento.dart';
 import 'package:buscafarma/backend/request/update_reserva.dart';
 import 'package:buscafarma/backend/response/message.dart';
 import 'package:dio/dio.dart';
@@ -30,6 +31,9 @@ abstract class API {
 
   @GET("/medicamento/listar")
   Future<List<Medicamento>> listaMedicamentos();
+
+  @POST("/medicamento/adicionar")
+  Future<Message> adicionarMedicamento(@Body() NovoMedicamento request);
 
   @GET("/reserva/listar")
   Future<List<Reserva>> listaReservas();

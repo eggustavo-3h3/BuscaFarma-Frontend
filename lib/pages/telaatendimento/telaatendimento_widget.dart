@@ -1183,8 +1183,10 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                     Padding(
                       padding: const EdgeInsets.all(20),
                       child: FFButtonWidget(
-                        onPressed: () {
-                          print('Button pressed ...');
+                        onPressed: () async {
+                          if (_reserva != null) {
+                            await _model.cancel(context, _reserva!);
+                          }
                         },
                         text: 'Não atendida',
                         options: FFButtonOptions(

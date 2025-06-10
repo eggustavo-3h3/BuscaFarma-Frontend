@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 class CategoriaService extends ChangeNotifier {
   List<Categoria> _categorias = [];
 
-  Future<void> carregar() async {
+  Future<List<Categoria>> carregar() async {
     try {
       final categorias = await API.instance.listaCategorias();
       _categorias = categorias;
       notifyListeners();
+
+      return categorias;
     } catch (e) {
       if (e is DioException) {
         throw ErrorHandler.dioException(error: e);
