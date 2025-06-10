@@ -1,6 +1,8 @@
 import 'package:buscafarma/backend/api.dart';
 import 'package:buscafarma/backend/error_handler.dart';
+import 'package:buscafarma/backend/model/usuario.dart';
 import 'package:buscafarma/backend/request/credencial.dart';
+import 'package:buscafarma/backend/util/api_util.dart';
 import 'package:buscafarma/services/auth_service.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
@@ -21,5 +23,9 @@ class LoginService {
     }
   }
 
-  getCurrentUserInfo() {}
+  Future<Usuario> getUserInfo(String cpf) async {
+    return await makeCall(() async {
+      return await API.instance.getByCPF(cpf);
+    });
+  }
 }

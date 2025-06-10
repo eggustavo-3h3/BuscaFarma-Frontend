@@ -46,8 +46,6 @@ class TelaloginModel extends FlutterFlowModel<TelaloginWidget> {
       );
 
       if (GetIt.I<AuthService>().isLogado) {
-        await loginService.getCurrentUserInfo();
-
         if (context.mounted) {
           context.pushNamed(TelaatendimentoWidget.routeName);
         }

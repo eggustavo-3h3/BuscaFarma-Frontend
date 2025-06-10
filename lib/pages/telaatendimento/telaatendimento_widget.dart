@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:buscafarma/backend/model/reserva.dart';
+import 'package:buscafarma/services/reserva_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../telacadastro/telacadastro_widget.dart';
@@ -25,6 +30,10 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  final _reservaService = GetIt.I<ReservaService>();
+  Reserva? _reserva;
+  var _index = 0;
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +47,22 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
 
     _model.txtQuantidadeTextController ??= TextEditingController();
     _model.txtQuantidadeFocusNode ??= FocusNode();
+
+    _model.txtCPFRetiranteFocusNode ??= FocusNode();
+    _model.txtCPFRetiranteTextController ??= TextEditingController();
+
+    _reservaService.addListener(onCPFPesquisado);
+  }
+
+  void onCPFPesquisado() {
+    setState(() {
+      if (_reservaService.pendentes.isNotEmpty) {
+        _index = 0;
+        _reserva = _reservaService.pendentes[_index];
+        _model.txtQuantidadeTextController.text = _reserva?.quantidade?.toString() ?? '1';
+        loadImage(_reserva!);
+      }
+    });
   }
 
   @override
@@ -224,15 +249,189 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                 -1,
                                                 0,
                                               ),
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(
+                                                    width: 200,
+                                                    child: TextFormField(
+                                                      controller:
+                                                          _model
+                                                              .txtCPFUsuarioTextController,
+                                                      focusNode:
+                                                          _model
+                                                              .txtCPFUsuarioFocusNode,
+                                                      autofocus: false,
+                                                      obscureText: false,
+                                                      decoration: InputDecoration(
+                                                        isDense: true,
+                                                        labelStyle: GoogleFonts.inter()
+                                                            .copyWith(
+                                                              fontWeight:
+                                                                  fft
+                                                                      .labelMedium
+                                                                      .fontWeight,
+                                                              fontStyle:
+                                                                  fft
+                                                                      .labelMedium
+                                                                      .fontStyle,
+                                                              letterSpacing:
+                                                                  0.0,
+                                                            ),
+                                                        hintStyle: GoogleFonts.inter()
+                                                            .copyWith(
+                                                              fontWeight:
+                                                                  fft
+                                                                      .labelMedium
+                                                                      .fontWeight,
+                                                              fontStyle:
+                                                                  fft
+                                                                      .labelMedium
+                                                                      .fontStyle,
+                                                              letterSpacing:
+                                                                  0.0,
+                                                            ),
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                    color: Color(
+                                                                      0x00000000,
+                                                                    ),
+                                                                    width: 1,
+                                                                  ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    8,
+                                                                  ),
+                                                            ),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                    color: Color(
+                                                                      0x00000000,
+                                                                    ),
+                                                                    width: 1,
+                                                                  ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    8,
+                                                                  ),
+                                                            ),
+                                                        errorBorder: OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                            color:
+                                                                FlutterFlowTheme.of(
+                                                                  context,
+                                                                ).error,
+                                                            width: 1,
+                                                          ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
+                                                        ),
+                                                        focusedErrorBorder:
+                                                            OutlineInputBorder(
+                                                              borderSide: BorderSide(
+                                                                color:
+                                                                    FlutterFlowTheme.of(
+                                                                      context,
+                                                                    ).error,
+                                                                width: 1,
+                                                              ),
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    8,
+                                                                  ),
+                                                            ),
+                                                        filled: true,
+                                                        fillColor: Color(
+                                                          0xFFE9E9E9,
+                                                        ),
+                                                      ),
+                                                      style: GoogleFonts.inter()
+                                                          .copyWith(
+                                                            fontWeight:
+                                                                fft
+                                                                    .bodyMedium
+                                                                    .fontWeight,
+                                                            fontStyle:
+                                                                fft
+                                                                    .bodyMedium
+                                                                    .fontStyle,
+                                                            letterSpacing: 0.0,
+                                                          ),
+                                                      cursorColor:
+                                                          FlutterFlowTheme.of(
+                                                            context,
+                                                          ).primaryText,
+                                                      validator: _model
+                                                          .txtCPFUsuarioTextControllerValidator
+                                                          .asValidator(context),
+                                                    ),
+                                                  ),
+                                                  IconButton(
+                                                    onPressed:
+                                                        () async =>
+                                                            await _model
+                                                                .pesquisaReservas(),
+                                                    icon: Icon(Icons.search),
+                                                    iconSize: 24,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: AlignmentDirectional(0, 0),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(10),
+                                            child: Text(
+                                              'CPF Retirante:',
+                                              style: GoogleFonts.inter()
+                                                  .copyWith(
+                                                    fontWeight:
+                                                        fft
+                                                            .bodyMedium
+                                                            .fontWeight,
+                                                    fontStyle:
+                                                        fft
+                                                            .bodyMedium
+                                                            .fontStyle,
+                                                    fontSize: 20,
+                                                    letterSpacing: 0.0,
+                                                  ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Align(
+                                              alignment: AlignmentDirectional(
+                                                -1,
+                                                0,
+                                              ),
                                               child: SizedBox(
                                                 width: 200,
                                                 child: TextFormField(
                                                   controller:
                                                       _model
-                                                          .txtCPFUsuarioTextController,
+                                                          .txtCPFRetiranteTextController,
                                                   focusNode:
                                                       _model
-                                                          .txtCPFUsuarioFocusNode,
+                                                          .txtCPFRetiranteFocusNode,
                                                   autofocus: false,
                                                   obscureText: false,
                                                   decoration: InputDecoration(
@@ -358,7 +557,7 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                     0,
                                                   ),
                                               child: Text(
-                                                'Nome Usuario:',
+                                                'Nome Retirante:',
                                                 style: GoogleFonts.inter()
                                                     .copyWith(
                                                       fontWeight:
@@ -545,11 +744,10 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                               ),
                                             ),
                                             Align(
-                                              alignment:
-                                                  AlignmentDirectional(
-                                                    -1,
-                                                    0,
-                                                  ),
+                                              alignment: AlignmentDirectional(
+                                                -1,
+                                                0,
+                                              ),
                                               child: Padding(
                                                 padding: EdgeInsets.all(8),
                                                 child: SizedBox(
@@ -565,28 +763,30 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                     obscureText: false,
                                                     decoration: InputDecoration(
                                                       isDense: true,
-                                                      labelStyle: GoogleFonts.inter().copyWith(
-                                                        fontWeight:
-                                                            fft
-                                                                .labelMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            fft
-                                                                .labelMedium
-                                                                .fontStyle,
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                                      hintStyle: GoogleFonts.inter().copyWith(
-                                                        fontWeight:
-                                                            fft
-                                                                .labelMedium
-                                                                .fontWeight,
-                                                        fontStyle:
-                                                            fft
-                                                                .labelMedium
-                                                                .fontStyle,
-                                                        letterSpacing: 0.0,
-                                                      ),
+                                                      labelStyle: GoogleFonts.inter()
+                                                          .copyWith(
+                                                            fontWeight:
+                                                                fft
+                                                                    .labelMedium
+                                                                    .fontWeight,
+                                                            fontStyle:
+                                                                fft
+                                                                    .labelMedium
+                                                                    .fontStyle,
+                                                            letterSpacing: 0.0,
+                                                          ),
+                                                      hintStyle: GoogleFonts.inter()
+                                                          .copyWith(
+                                                            fontWeight:
+                                                                fft
+                                                                    .labelMedium
+                                                                    .fontWeight,
+                                                            fontStyle:
+                                                                fft
+                                                                    .labelMedium
+                                                                    .fontStyle,
+                                                            letterSpacing: 0.0,
+                                                          ),
                                                       enabledBorder:
                                                           OutlineInputBorder(
                                                             borderSide:
@@ -657,19 +857,16 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                               fft
                                                                   .bodyMedium
                                                                   .fontStyle,
-                                                          letterSpacing:
-                                                              0.0,
+                                                          letterSpacing: 0.0,
                                                         ),
-                                                                                    
+
                                                     cursorColor:
                                                         FlutterFlowTheme.of(
                                                           context,
                                                         ).primaryText,
                                                     validator: _model
                                                         .txtQuantidadeTextControllerValidator
-                                                        .asValidator(
-                                                          context,
-                                                        ),
+                                                        .asValidator(context),
                                                   ),
                                                 ),
                                               ),
@@ -681,8 +878,7 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                   ),
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
@@ -730,9 +926,7 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                 decoration: BoxDecoration(
                                                   color: Color(0xFFE9E9E9),
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                        10,
-                                                      ),
+                                                      BorderRadius.circular(10),
                                                   shape: BoxShape.rectangle,
                                                 ),
                                                 child: Padding(
@@ -741,15 +935,12 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                     width: 400,
                                                     height: 128.8,
                                                     decoration: BoxDecoration(
-                                                      color: Color(
-                                                        0x00AACCCB,
-                                                      ),
+                                                      color: Color(0x00AACCCB),
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                             10,
                                                           ),
-                                                      shape:
-                                                          BoxShape.rectangle,
+                                                      shape: BoxShape.rectangle,
                                                       border: Border.all(
                                                         color: Color(
                                                           0xFF557779,
@@ -764,28 +955,29 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                           CrossAxisAlignment
                                                               .center,
                                                       children: [
-                                                        Container(
-                                                          width: 85,
-                                                          height: 100,
-                                                          decoration: BoxDecoration(
-                                                            color: Color(
-                                                              0xFFE9E9E9,
+                                                        _reserva == null
+                                                            ? Text("")
+                                                            : Container(
+                                                              width: 85,
+                                                              height: 100,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                    color: Color(
+                                                                      0xFFE9E9E9,
+                                                                    ),
+                                                                  ),
+                                                              child: Image.asset(
+                                                                'assets/images/remedio.png',
+                                                                fit:
+                                                                    BoxFit
+                                                                        .cover,
+                                                                width: 85,
+                                                                height: 100,
+                                                              ),
                                                             ),
-                                                            image: DecorationImage(
-                                                              fit:
-                                                                  BoxFit
-                                                                      .cover,
-                                                              image:
-                                                                  Image.asset(
-                                                                    'assets/images/haha.png',
-                                                                  ).image,
-                                                            ),
-                                                          ),
-                                                        ),
                                                         Column(
                                                           mainAxisSize:
-                                                              MainAxisSize
-                                                                  .max,
+                                                              MainAxisSize.max,
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .center,
@@ -802,7 +994,10 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                                       2,
                                                                     ),
                                                                 child: Text(
-                                                                  'Amoxicilina Tri-Hidratada 500mg + \nClavulanato de Potássio 125mg \nSandoz Genérico',
+                                                                  _reserva
+                                                                          ?.medicamento
+                                                                          .nomeQuimico ??
+                                                                      'Não informado',
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
@@ -835,7 +1030,10 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                                                       10,
                                                                     ),
                                                                 child: Text(
-                                                                  '30 Comprimidos',
+                                                                  _reserva
+                                                                          ?.medicamento
+                                                                          .quantidade ??
+                                                                      'Não informado',
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
@@ -876,29 +1074,28 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                                         alignment: AlignmentDirectional(0, 0),
                                         child: Text(
                                           'Ver foto receita:',
-                                          style: GoogleFonts.inter()
-                                              .copyWith(
-                                                fontWeight:
-                                                    fft
-                                                        .bodyMedium
-                                                        .fontWeight,
-                                                fontStyle:
-                                                    fft
-                                                        .bodyMedium
-                                                        .fontStyle,
-                                                fontSize: 20,
-                                                letterSpacing: 0.0,
-                                              ),
+                                          style: GoogleFonts.inter().copyWith(
+                                            fontWeight:
+                                                fft.bodyMedium.fontWeight,
+                                            fontStyle: fft.bodyMedium.fontStyle,
+                                            fontSize: 20,
+                                            letterSpacing: 0.0,
+                                          ),
                                         ),
                                       ),
                                       ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          'https://picsum.photos/seed/607/600',
-                                          width: 600,
-                                          height: 800,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        child:
+                                            _error != null
+                                                ? Text(
+                                                  _error!,
+                                                  style: const TextStyle(
+                                                    color: Colors.red,
+                                                  ),
+                                                )
+                                                : _imageBytes != null
+                                                ? Image.memory(_imageBytes!)
+                                                : const CircularProgressIndicator(),
                                       ),
                                     ],
                                   ),
@@ -912,52 +1109,168 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
                   ),
                 ),
                 Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Align(
-                      alignment: AlignmentDirectional(0, 0),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
-                        child: FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: 'Atendida',
-                          options: FFButtonOptions(
-                            height: 61.1,
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                              16,
-                              0,
-                              16,
-                              0,
-                            ),
-                            iconPadding: EdgeInsetsDirectional.fromSTEB(
-                              0,
-                              0,
-                              0,
-                              0,
-                            ),
-                            color: Color(0xFFAACCCB),
-                            textStyle: GoogleFonts.interTight().copyWith(
-                              fontWeight: fft.titleSmall.fontWeight,
-                              fontStyle: fft.titleSmall.fontStyle,
-                              color: Color(0xFF2F2F2F),
-                              letterSpacing: 0.0,
-                            ),
-                            elevation: 0,
-                            borderRadius: BorderRadius.circular(8),
+                    Text(
+                      "${_index + 1} / ${_reservaService.pendentes.length}",
+                      style: GoogleFonts.inter().copyWith(
+                        fontWeight: fft.bodyMedium.fontWeight,
+                        fontStyle: fft.bodyMedium.fontStyle,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: FFButtonWidget(
+                        onPressed: () => anterior(context),
+                        text: 'Anterior',
+                        options: FFButtonOptions(
+                          height: 61.1,
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
+                            0,
+                            0,
+                            0,
+                            0,
                           ),
+                          color: Color(0xFFAACCCB),
+                          textStyle: GoogleFonts.interTight().copyWith(
+                            fontWeight: fft.titleSmall.fontWeight,
+                            fontStyle: fft.titleSmall.fontStyle,
+                            color: Color(0xFF2F2F2F),
+                            letterSpacing: 0.0,
+                          ),
+                          elevation: 0,
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsetsDirectional.fromSTEB(0, 30, 0, 0),
+                      padding: const EdgeInsets.all(20),
+                      child: FFButtonWidget(
+                        onPressed: () async {
+                          if (_reserva != null) {
+                            await _model.makeAtendida(context, _reserva!);
+                          }
+                        },
+                        text: 'Atendida',
+                        options: FFButtonOptions(
+                          height: 61.1,
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
+                            0,
+                            0,
+                            0,
+                            0,
+                          ),
+                          color: Color(0xFFAACCCB),
+                          textStyle: GoogleFonts.interTight().copyWith(
+                            fontWeight: fft.titleSmall.fontWeight,
+                            fontStyle: fft.titleSmall.fontStyle,
+                            color: Color(0xFF2F2F2F),
+                            letterSpacing: 0.0,
+                          ),
+                          elevation: 0,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
                       child: FFButtonWidget(
                         onPressed: () {
                           print('Button pressed ...');
                         },
                         text: 'Não atendida',
+                        options: FFButtonOptions(
+                          height: 61.1,
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
+                            0,
+                            0,
+                            0,
+                            0,
+                          ),
+                          color: Color(0xFFAACCCB),
+                          textStyle: GoogleFonts.interTight().copyWith(
+                            fontWeight: fft.titleSmall.fontWeight,
+                            fontStyle: fft.titleSmall.fontStyle,
+                            color: Color(0xFF040404),
+                            letterSpacing: 0.0,
+                          ),
+
+                          elevation: 0,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: FFButtonWidget(
+                        onPressed: () async => await indisponivel(context),
+                        text: 'Indisponível',
+                        options: FFButtonOptions(
+                          height: 61.1,
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
+                            0,
+                            0,
+                            0,
+                            0,
+                          ),
+                          color: Color(0xFFAACCCB),
+                          textStyle: GoogleFonts.interTight().copyWith(
+                            fontWeight: fft.titleSmall.fontWeight,
+                            fontStyle: fft.titleSmall.fontStyle,
+                            color: Color(0xFF040404),
+                            letterSpacing: 0.0,
+                          ),
+                          elevation: 0,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: FFButtonWidget(
+                        onPressed: () async {
+                          if (_reserva != null) {
+                            await _model.makeFaltaEstoque(context, _reserva!);
+                          }
+                        },
+                        text: 'Falta estoque',
+                        options: FFButtonOptions(
+                          height: 61.1,
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
+                          iconPadding: EdgeInsetsDirectional.fromSTEB(
+                            0,
+                            0,
+                            0,
+                            0,
+                          ),
+                          color: Color(0xFFAACCCB),
+                          textStyle: GoogleFonts.interTight().copyWith(
+                            fontWeight: fft.titleSmall.fontWeight,
+                            fontStyle: fft.titleSmall.fontStyle,
+                            color: Color(0xFF040404),
+                            letterSpacing: 0.0,
+                          ),
+
+                          elevation: 0,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: FFButtonWidget(
+                        onPressed: () => proxima(context),
+                        text: 'Próxima',
                         options: FFButtonOptions(
                           height: 61.1,
                           padding: EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
@@ -988,5 +1301,80 @@ class _TelaatendimentoWidgetState extends State<TelaatendimentoWidget> {
         ),
       ),
     );
+  }
+
+  Uint8List? _imageBytes;
+  String? _error;
+
+  void loadImage(Reserva reserva) async {
+    final base64Str = reserva.imagemReceita;
+
+    if (base64Str.isEmpty) {
+      setState(() => _error = 'A imagem está vazia.');
+      return;
+    }
+
+    try {
+      final bytes = base64Decode(base64Str);
+
+      // Validação simples para garantir que é uma imagem
+      if (_model.isImage(bytes)) {
+        setState(() {
+          _imageBytes = bytes;
+          _error = null;
+        });
+      } else {
+        setState(() => _error = 'O conteúdo não é uma imagem válida.');
+      }
+    } catch (e) {
+      setState(() => _error = 'Erro ao decodificar o base64.');
+    }
+  }
+
+  Future<void> indisponivel(BuildContext context) async {
+    if (_reserva != null) {
+      await _model.makeIndisponivel(context, _reserva!);
+
+      if (_reservaService.pendentes.isNotEmpty) {
+        setState(() {
+          _index = 0;
+          _reserva = _reservaService.pendentes[_index];
+        });
+      }
+    }
+  }
+
+  void proxima(BuildContext context) {
+    final newIndex = _index + 1;
+
+    if (_reservaService.pendentes.length > newIndex) {
+      setState(() {
+        _index = newIndex;
+        _reserva = _reservaService.pendentes[_index];
+        _model.txtQuantidadeTextController.text = _reserva?.quantidade?.toString() ?? '1';
+        loadImage(_reserva!);
+      });
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Você já atingiu o fim da lista")));
+    }
+  }
+
+  void anterior(BuildContext context) {
+    final newIndex = _index - 1;
+
+    if (newIndex >= 0 && _reservaService.pendentes.length > newIndex) {
+      setState(() {
+        _index = newIndex;
+        _reserva = _reservaService.pendentes[_index];
+        _model.txtQuantidadeTextController.text = _reserva?.quantidade?.toString() ?? '1';
+        loadImage(_reserva!);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Você já atingiu o início da lista")),
+      );
+    }
   }
 }

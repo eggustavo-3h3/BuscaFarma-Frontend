@@ -50,4 +50,20 @@ class Reserva {
       _$ReservaFromJson(json);
 
   Map<String, dynamic> toJson() => _$ReservaToJson(this);
+
+  Reserva withStatus(StatusReserva status) {
+    return Reserva(
+      id,
+      data,
+      imagemReceita,
+      quantidade,
+      retirada,
+      retiranteCPF,
+      retiranteNome,
+      status,
+      tipoAtendimento,
+      usuario,
+      medicamento,
+    );
+  }
 }
