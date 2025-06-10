@@ -22,3 +22,15 @@ Sempre que mexer no código de API ou nos Requests/Responses rodem:
 ```bash
 dart run build_runner build --delete-conflicting-outputs
 ```
+
+## Deploy
+
+```bash
+#limpa as compilações existentes para prevenir desencontros
+flutter clean
+
+#faz o build para web
+flutter build web
+
+#depois disso é só pegar o conteúdo da pasta build/web e testar
+```
