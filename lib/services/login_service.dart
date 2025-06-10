@@ -20,4 +20,6 @@ class LoginService {
       throw ErrorHandler.otherException();
     }
   }
+
+  getCurrentUserInfo() {}
 }
