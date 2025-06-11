@@ -232,7 +232,7 @@ class _API implements API {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/reserva/atualizar/${id}',
+            '/reserva/atender/${id}',
             queryParameters: queryParameters,
             data: _data,
           )

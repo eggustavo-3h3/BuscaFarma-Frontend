@@ -38,7 +38,7 @@ abstract class API {
   @GET("/reserva/listar")
   Future<List<Reserva>> listaReservas();
 
-  @PUT("/reserva/atualizar/{id}")
+  @PUT("/reserva/atender/{id}")
   Future<Message> updateReserva(@Path() String id, @Body() UpdateReserva update);
 
   @GET("/reserva/usuario/{id}")

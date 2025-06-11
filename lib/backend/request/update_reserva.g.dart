@@ -8,11 +8,6 @@ part of 'update_reserva.dart';
 
 UpdateReserva _$UpdateReservaFromJson(Map<String, dynamic> json) =>
     UpdateReserva(
-      id: json['id'] as String,
-      usuarioId: json['usuarioId'] as String,
-      medicamentoId: json['medicamentoId'] as String,
-      data: DateTime.parse(json['dataReserva'] as String),
-      imagemReceita: json['imagemReceita'] as String,
       tipoAtendimento: $enumDecode(
         _$TipoAtendimentoEnumMap,
         json['enumTipoAtendimento'],
@@ -20,20 +15,13 @@ UpdateReserva _$UpdateReservaFromJson(Map<String, dynamic> json) =>
       status: $enumDecode(_$StatusReservaEnumMap, json['status']),
       retiranteNome: json['retiranteNome'] as String?,
       retiranteCPF: json['retiranteCPF'] as String?,
-      quantidade: (json['quantidade'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$UpdateReservaToJson(
   UpdateReserva instance,
 ) => <String, dynamic>{
-  'id': instance.id,
-  'usuarioId': instance.usuarioId,
-  'medicamentoId': instance.medicamentoId,
-  'dataReserva': instance.data.toIso8601String(),
-  'imagemReceita': instance.imagemReceita,
   'enumTipoAtendimento': _$TipoAtendimentoEnumMap[instance.tipoAtendimento]!,
   'status': _$StatusReservaEnumMap[instance.status]!,
-  'quantidade': instance.quantidade,
   'retiranteNome': instance.retiranteNome,
   'retiranteCPF': instance.retiranteCPF,
 };

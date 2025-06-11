@@ -11,7 +11,7 @@ NovoMedicamento _$NovoMedicamentoFromJson(Map<String, dynamic> json) =>
       nomeComercial: json['nomeComercial'] as String,
       nomeQuimico: json['nomeQuimico'] as String,
       descricao: json['descricao'] as String,
-      imagem: json['imagem'] as String? ?? "",
+      imagem: json['imagem'] as String? ?? "imagem",
       tipoMedicamento: $enumDecode(
         _$TipoMedicamentoEnumMap,
         json['tipoMedicamento'],

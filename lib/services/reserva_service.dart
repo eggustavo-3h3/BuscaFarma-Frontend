@@ -78,7 +78,6 @@ class ReservaService extends ChangeNotifier {
 
   Future<Message> makeAtendida(
     Reserva reserva,
-    int quantidade,
     String retiranteNome,
     String retiranteCPF,
   ) async {
@@ -87,7 +86,6 @@ class ReservaService extends ChangeNotifier {
         reserva.id,
         UpdateReserva.atendida(
           reserva,
-          quantidade,
           retiranteNome,
           retiranteCPF,
         ),

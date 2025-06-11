@@ -137,7 +137,7 @@ class TelaatendimentoModel extends FlutterFlowModel<TelaatendimentoWidget> {
       }
 
       final service = GetIt.I<ReservaService>();
-      final result = await service.makeAtendida(reserva, quantidade, retiranteNome, retiranteCPF);
+      final result = await service.makeAtendida(reserva, retiranteNome, retiranteCPF);
 
       if (context.mounted) {
         ScaffoldMessenger.of(
